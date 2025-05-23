@@ -1,5 +1,9 @@
 ---
-
+import { Image } from 'astro:assets';
+import '@styles/reset.css';
+import '@styles/styles.css'
+import avatar from '@assets/placeholder-boy.webp';
+import { lazy } from 'astro:schema';
 ---
 
 <html lang="en">
@@ -11,6 +15,14 @@
 		<title>Astro</title>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<header class="container">
+			<div>
+				<Image src={avatar} alt={'Christian'} width={200} height={200} loading={'eager'} />
+				<div>
+					<h1>Christian Baloncio</h1>
+					<p>Web Developer</p>
+				</div>
+			</div>
+		</header>
 	</body>
 </html>

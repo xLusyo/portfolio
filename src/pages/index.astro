@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import '@styles/reset.css';
 import '@styles/styles.css'
 import avatar from '@assets/placeholder-boy.webp';
-import { lazy } from 'astro:schema';
+import contents from '@data/content.json';
 ---
 
 <html lang="en">
@@ -17,12 +17,28 @@ import { lazy } from 'astro:schema';
 	<body>
 		<header class="container">
 			<div>
-				<Image src={avatar} alt={'Christian'} width={200} height={200} loading={'eager'} />
+				<Image src={avatar} alt={'Christian'} width={150} height={150} loading={'eager'} class="avatar" />
 				<div>
 					<h1>Christian Baloncio</h1>
 					<p>Web Developer</p>
 				</div>
 			</div>
 		</header>
+
+		<div class="wrapper container">
+			<main>
+				{contents.map( content => (
+					<div class="card">
+						<h2>{content.title}</h2>
+						<p>{content.content_body}</p>
+					</div>
+				))}
+			</main>
+			<aside>
+				<div class="card">
+					sasasasasasasas
+				</div>
+			</aside>
+		</div>
 	</body>
 </html>

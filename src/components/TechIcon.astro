@@ -1,0 +1,20 @@
+---
+import { iconPaths } from './IconPaths';
+
+interface Props {
+  icon: keyof typeof iconPaths;
+}
+
+const { icon } = Astro.props;
+const iconPath = iconPaths[icon];
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="127px"
+  height="127px"
+  viewBox="0 0 32 32"
+  fill="currentColor"
+>
+  <g set:html={iconPath} />
+</svg>

@@ -1,3 +1,61 @@
 ---
+import TechStackMarquee from './TechStackMarquee.astro';
+
+const techStack1 = [
+  { name: 'HTML', icon: 'html-logo' as const },
+  { name: 'CSS', icon: 'css-logo' as const },
+  { name: 'JavaScript', icon: 'javascript-logo' as const },
+  { name: 'TypeScript', icon: 'typescript-logo' as const },
+  { name: 'React', icon: 'react-logo' as const },
+  { name: 'Tailwind', icon: 'tailwind' as const},
+  { name: 'Livewire', icon: 'livewire' as const},
+  { name: 'Zapier', icon: 'zapier' as const},
+  { name: 'Docker', icon: 'docker' as const},
+];
+
+const techStack2 = [
+  { name: 'Node.js', icon: 'nodejs-logo' as const },
+  { name: 'Python', icon: 'python-logo' as const },
+  { name: 'Astro', icon: 'astro-logo' as const },
+  { name: 'Laravel', icon: 'laravel-logo' as const },
+  { name: 'WordPress', icon: 'wordpress-logo' as const },
+  { name: 'Bootstrap', icon: 'bootstrap' as const },
+  { name: 'Hubspot', icon: 'hubspot' as const },
+  { name: 'Git', icon: 'git' as const},
+  { name: 'MySQL', icon: 'mysql' as const},
+];
+
+const rows = [
+  { techStack: techStack1, direction: 'left' as const },
+  { techStack: techStack2, direction: 'right' as const },
+];
 ---
 
+<section class="tech-stack-section">
+  <div class="stack gap-4">
+    <h2>Technologies and Tools</h2>
+    <TechStackMarquee rows={rows} speed={30} />
+  </div>
+</section>
+
+<style>
+  .tech-stack-section {
+    padding: 4rem 0;
+  }
+
+  h2 {
+    font-size: var(--text-3xl);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  @media (min-width: 50em) {
+    .tech-stack-section {
+      padding: 6rem 0;
+    }
+
+    h2 {
+      font-size: var(--text-4xl);
+    }
+  }
+</style>

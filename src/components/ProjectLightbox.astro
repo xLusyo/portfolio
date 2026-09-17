@@ -1,0 +1,116 @@
+<dialog id="project-lightbox" aria-labelledby="project-lightbox-title">
+	<div class="toolbar"><button type="button" class="close" autofocus>Close <span aria-hidden="true">×</span></button></div>
+	<div class="lightbox-content"></div>
+</dialog>
+
+<script>
+	const dialog = document.querySelector<HTMLDialogElement>('#project-lightbox');
+	if (dialog) {
+		const content = dialog.querySelector<HTMLDivElement>('.lightbox-content')!;
+		const closeButton = dialog.querySelector<HTMLButtonElement>('.close')!;
+		let opener: HTMLElement | null = null;
+		let previousOverflow = '';
+		let previousHash = '';
+		const prefix = '#project=';
+
+		function openProject(id: string, trigger: HTMLElement | null = null) {
+			const template = Array.from(document.querySelectorAll<HTMLTemplateElement>('[data-project-template]'))
+				.find((item) => item.dataset.projectTemplate === id);
+			if (!template || !dialog) {
+				if (dialog?.open) dialog.close();
+				return;
+			}
+			opener = trigger ?? document.querySelector<HTMLElement>(`[data-project-open="${CSS.escape(id)}"]`);
+			content.replaceChildren(template.content.cloneNode(true));
+			const image = content.querySelector<HTMLImageElement>('img')!;
+			const media = content.querySelector<HTMLElement>('.project-media')!;
+			const status = content.querySelector<HTMLElement>('.image-status')!;
+			function finishImage(success: boolean) {
+				media.setAttribute('aria-busy', 'false');
+				status.hidden = success;
+				image.hidden = !success;
+				if (!success) status.textContent = 'Preview unavailable. Please close and try again.';
+			}
+			image.addEventListener('load', () => finishImage(true), { once: true });
+			image.addEventListener('error', () => finishImage(false), { once: true });
+			if (image.complete) finishImage(image.naturalWidth > 0);
+
+			if (!dialog.open) {
+				previousOverflow = document.documentElement.style.overflow;
+				previousHash = location.hash.startsWith(prefix) ? '' : location.hash;
+				dialog.showModal();
+				document.documentElement.style.overflow = 'hidden';
+			}
+			dialog.scrollTop = 0;
+			closeButton.focus({ preventScroll: true });
+		}
+
+		document.querySelectorAll<HTMLAnchorElement>('[data-project-open]').forEach((trigger) => {
+			trigger.addEventListener('click', (event) => {
+				// Keep native image links usable without JS and with modifier keys.
+				if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+				event.preventDefault();
+				openProject(trigger.dataset.projectOpen!, trigger);
+				history.replaceState(history.state, '', `${prefix}${encodeURIComponent(trigger.dataset.projectOpen!)}`);
+			});
+		});
+		closeButton.addEventListener('click', () => dialog.close());
+		dialog.addEventListener('keydown', (event) => {
+			if (event.key !== 'Tab') return;
+			const controls = Array.from(dialog.querySelectorAll<HTMLElement>('button, a[href]'));
+			const first = controls[0];
+			const last = controls[controls.length - 1];
+			if (event.shiftKey && document.activeElement === first) {
+				event.preventDefault();
+				last.focus();
+			} else if (!event.shiftKey && document.activeElement === last) {
+				event.preventDefault();
+				first.focus();
+			}
+		});
+		// Require both ends of the pointer gesture to be outside the panel.
+		const outside = (event: PointerEvent | MouseEvent) => {
+			const rect = dialog.getBoundingClientRect();
+			return event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+		};
+		let startedOutside = false;
+		dialog.addEventListener('pointerdown', (event) => { startedOutside = outside(event); });
+		dialog.addEventListener('click', (event) => {
+			if (event.target === dialog && startedOutside && outside(event)) dialog.close();
+		});
+		dialog.addEventListener('close', () => {
+			document.documentElement.style.overflow = previousOverflow;
+			if (location.hash.startsWith(prefix)) {
+				history.replaceState(history.state, '', `${location.pathname}${location.search}${previousHash}`);
+			}
+			content.replaceChildren();
+			opener?.focus({ preventScroll: true });
+		});
+		function openFromHash() {
+			if (!location.hash.startsWith(prefix)) {
+				if (dialog?.open) dialog.close();
+				return;
+			}
+			try { openProject(decodeURIComponent(location.hash.slice(prefix.length))); }
+			catch { if (dialog?.open) dialog.close(); }
+		}
+		window.addEventListener('hashchange', openFromHash);
+		openFromHash();
+	}
+</script>
+
+<style>
+	dialog { --lightbox-padding: clamp(1rem, 3vw, 2.5rem); position: fixed; inset: 0; margin: auto; padding: 0; width: min(68rem, calc(100% - 2rem)); max-width: none; max-height: calc(100dvh - 2rem); overflow: auto; overscroll-behavior: contain; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--gray-200); box-shadow: var(--shadow-lg); }
+	dialog::backdrop { background: rgb(0 12 5 / .72); }
+	.toolbar { position: sticky; top: 0; z-index: 1; display: flex; justify-content: flex-end; padding: 1rem var(--lightbox-padding); background: var(--surface); }
+	.close { display: inline-flex; align-items: center; gap: .75rem; min-height: 44px; padding: .5rem .75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--gray-900); color: var(--gray-0); font-size: var(--text-sm); font-weight: 600; }
+	.close span { font-size: 1.5rem; line-height: 1; }
+	.close:hover { border-color: var(--accent-regular); }
+	.close:active { transform: scale(.98); }
+	@media (min-width: 50em) { dialog { max-height: calc(100dvh - 4rem); width: min(68rem, calc(100% - 4rem)); } }
+	@media (prefers-reduced-motion: no-preference) {
+		dialog[open] { animation: appear 160ms ease-out; }
+		@keyframes appear { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+	}
+	@media (forced-colors: active) { dialog, .close { border-color: CanvasText; } }
+</style>

@@ -7,7 +7,10 @@ export const collections = {
 		loader: glob({ base: './src/content/work', pattern: '**/*.md' }),
 		schema: z.object({
 			title: z.string(),
-			description: z.string(),
+			description: z.string().optional(),
+			url: z.string().url().refine((value) => /^https?:\/\//i.test(value), {
+				message: 'Project links must use http or https.',
+			}).optional(),
 			publishDate: z.coerce.date(),
 			tags: z.array(z.string()),
 			img: z.string(),

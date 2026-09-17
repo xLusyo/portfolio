@@ -1,0 +1,15 @@
+---
+interface Props {
+	tags: string[];
+}
+const { tags } = Astro.props;
+---
+
+<ul class="badges" aria-label="Project technologies">
+	{tags.map((tag) => <li>{tag}</li>)}
+</ul>
+
+<style>
+	.badges { display: flex; flex-wrap: wrap; gap: .5rem; list-style: none; padding: 0; }
+	li { max-width: 100%; padding: .3rem .7rem; border: 1px solid var(--border); border-radius: 999px; background: var(--gray-900); color: var(--gray-200); font-size: .75rem; line-height: 1.5; overflow-wrap: anywhere; }
+</style>

@@ -4,6 +4,7 @@ import ContactCTA from '../components/ContactCTA.astro';
 import Grid from '../components/Grid.astro';
 import Hero from '../components/Hero.astro';
 import PortfolioPreview from '../components/PortfolioPreview.astro';
+import ProjectLightbox from '../components/ProjectLightbox.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const projects = (await getCollection('work')).sort(
@@ -34,4 +35,5 @@ const projects = (await getCollection('work')).sort(
 		</main>
 		<ContactCTA />
 	</div>
+	<ProjectLightbox />
 </BaseLayout>

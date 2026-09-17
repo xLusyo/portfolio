@@ -11,9 +11,11 @@ const iconPath = iconPaths[icon];
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  width="127px"
-  height="127px"
-  viewBox="0 0 32 32"
+  width="24"
+  height="24"
+  viewBox={icon === 'html-logo' ? '0 0 32 32' : '0 0 24 24'}
+  aria-hidden="true"
+  focusable="false"
   fill="currentColor"
 >
   <g set:html={iconPath} />

@@ -67,6 +67,7 @@ portfolio/
 ## Styling Guidelines
 
 See `docs/styling.md` for comprehensive styling documentation.
+Use skills in `agents/skills` for branding guidelines.
 
 ### Quick Reference
 
@@ -109,19 +110,21 @@ title: Project Name
 publishDate: YYYY-MM-DD 00:00:00
 img: /assets/project-thumb.png
 img_alt: Alt text description
-description: |
-  Brief project description
+# Optional verified public project link:
+# url: https://your-project-domain.com
 tags:
   - Dev
   - WordPress
 ---
 ```
 3. Add project thumbnail to `public/assets/`
+4. Keep entries frontmatter-only. Cards and lightboxes show the image, name, badges, and optional website link, not descriptions or case-study bodies. See `docs/work.md` for the ongoing content workflow and legacy URL behavior.
 
 ### Content Schema
 Defined in `src/content.config.ts`:
 - `title`: string (required)
-- `description`: string (required)
+- `description`: string (optional legacy metadata; not displayed)
+- `url`: absolute HTTP(S) URL (optional public project link)
 - `publishDate`: date (required)
 - `tags`: string[] (required)
 - `img`: string (required)

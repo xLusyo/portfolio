@@ -103,7 +103,10 @@ test('theme toggle persists and homepage links work', async ({ page }) => {
   await page.locator('.hero-actions').getByRole('link', { name: 'View work' }).click();
   await expect(page).toHaveURL(/\/work\/?$/);
   await page.goto('/');
-  await page.locator('.project-grid .preview').first().click();
+  const preview = page.locator('.project-grid .preview').first();
+  const id = await preview.getAttribute('data-project-open');
+  expect(id).toBeTruthy();
+  await preview.click();
   await expect(page.getByRole('dialog')).toBeVisible();
-  await expect(page).toHaveURL(/\/#project=portal-df$/);
+  expect(new URL(page.url()).hash).toBe(`#project=${encodeURIComponent(id!)}`);
 });

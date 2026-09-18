@@ -2,6 +2,8 @@
 import ContactCTA from '../components/ContactCTA.astro';
 import Hero from '../components/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait.jpeg';
 ---
 
 <BaseLayout title="Get To Know Christian More!" description="Details that is nice to know for Christian">
@@ -11,11 +13,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				title="About"
 				tagline="Thanks for stopping by. Read below to learn more about myself and my background."
 			>
-				<img
-					width="480"
-					height="620"
-					src="/assets/portrait.jpeg"
+				<Image
+					src={portrait}
 					alt="Christian"
+					width={720}
+					widths={[360, 720, 1080]}
+					sizes="(min-width: 78rem) 45rem, (min-width: 50em) calc((100vw - 3rem) * 0.6), calc(100vw - 3rem)"
+					format="webp"
+					loading="eager"
+					decoding="async"
+					fetchpriority="high"
 				/>
 			</Hero>
 

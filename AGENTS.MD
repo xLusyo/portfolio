@@ -19,6 +19,7 @@ This is a **personal portfolio website** for Christian Baloncio, a Full Stack We
 ```
 portfolio/
 ├── src/
+│   ├── assets/         # Image sources optimized by Astro
 │   ├── components/     # Reusable Astro components
 │   ├── content/        # Markdown content for portfolio items
 │   │   └── work/       # Project case studies
@@ -108,7 +109,7 @@ npm run preview      # Preview production build
 ---
 title: Project Name
 publishDate: YYYY-MM-DD 00:00:00
-img: /assets/project-thumb.png
+img: ../../assets/project-thumb.png
 img_alt: Alt text description
 # Optional verified public project link:
 # url: https://your-project-domain.com
@@ -117,7 +118,7 @@ tags:
   - WordPress
 ---
 ```
-3. Add project thumbnail to `public/assets/`
+3. Add project thumbnail to `src/assets/`. The `img` path is relative to the Markdown file (use `../../../assets/` for entries one folder deeper).
 4. Keep entries frontmatter-only. Cards and lightboxes show the image, name, badges, and optional website link, not descriptions or case-study bodies. See `docs/work.md` for the ongoing content workflow and legacy URL behavior.
 
 ### Content Schema
@@ -127,7 +128,7 @@ Defined in `src/content.config.ts`:
 - `url`: absolute HTTP(S) URL (optional public project link)
 - `publishDate`: date (required)
 - `tags`: string[] (required)
-- `img`: string (required)
+- `img`: local image path (required; validated by Astro's `image()` helper and resolved to image metadata)
 - `img_alt`: string (optional)
 
 ## Icons
@@ -157,6 +158,7 @@ Icons are managed in `src/components/IconPaths.ts`. The project uses:
 - Support `prefers-reduced-motion` and `forced-colors`
 
 ### Performance
+- Render photos and screenshots with `Image` from `astro:assets`, using imported sources from `src/assets/` or collection `image()` metadata, responsive `widths`/`sizes`, and explicit alt text
 - Lazy load images below the fold with `loading="lazy"`
 - Use `decoding="async"` for images
 - Background images load progressively with `.loaded` class

@@ -8,6 +8,8 @@ import ProjectLightbox from '../components/ProjectLightbox.astro';
 import Skills from '../components/Skills.astro';
 import TechStack from '../components/TechStack.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait.jpeg';
 const projects = (await getCollection('work'))
 	.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
 	.slice(0, 2);
@@ -25,7 +27,17 @@ const projects = (await getCollection('work'))
 				</div>
 			</div>
 			<div class="portrait" data-motion="portrait">
-				<img alt="Christian Baloncio standing with his arms crossed" width="480" height="620" src="/assets/portrait.jpeg" fetchpriority="high" />
+				<Image
+					src={portrait}
+					alt="Christian Baloncio standing with his arms crossed"
+					width={384}
+					widths={[320, 384, 768]}
+					sizes="(min-width: 27rem) 24rem, calc(100vw - 3rem)"
+					format="webp"
+					loading="eager"
+					decoding="async"
+					fetchpriority="high"
+				/>
 			</div>
 		</header>
 		<div class="wrapper"><Skills /></div>

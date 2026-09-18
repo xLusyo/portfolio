@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page, type TestInfo } from '@playwright/test';
+import { expectOptimizedWebP } from './image-helpers';
 
 const root = 'main[data-home-motion]';
 const targets = `${root} [data-motion]`;
@@ -309,14 +310,19 @@ test.describe('homepage motion', () => {
     const errors: string[] = [];
     page.on('pageerror', error => errors.push(error.message));
     await page.goto('/');
-    const trigger = page.getByRole('link', { name: 'Preview Portal', exact: true });
+    const card = page.locator('.project-grid .card').first();
+    const title = (await card.locator('.title').innerText()).trim();
+    const trigger = card.locator('.preview');
+    const id = await trigger.getAttribute('data-project-open');
+    expect(id).toBeTruthy();
+    const projectHash = `#project=${encodeURIComponent(id!)}`;
     await trigger.scrollIntoViewIfNeeded();
     await expectSettled(page.locator('.project-grid > li[data-motion="reveal"]').first());
     await trigger.focus();
     await page.keyboard.press('Enter');
-    const dialog = page.getByRole('dialog', { name: 'Portal', exact: true });
+    const dialog = page.getByRole('dialog', { name: title, exact: true });
     await expect(dialog).toBeVisible();
-    await expect(page).toHaveURL(/\/#project=portal-df$/);
+    expect(new URL(page.url()).hash).toBe(projectHash);
     await expect(dialog.getByRole('button', { name: 'Close', exact: true })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
@@ -324,7 +330,7 @@ test.describe('homepage motion', () => {
     await expectSettled(page.locator('.project-grid > li[data-motion="reveal"]').first());
     await expect(page).toHaveURL(/\/$/);
 
-    await page.goto('/#project=portal-df');
+    await page.goto(`/${projectHash}`);
     await expect(dialog).toBeVisible();
     await expect(dialog.getByRole('button', { name: 'Close', exact: true })).toBeFocused();
     await dialog.getByRole('button', { name: 'Close', exact: true }).click();
@@ -378,8 +384,13 @@ test.describe('homepage progressive enhancement without JavaScript', () => {
     await page.locator('.contact-inner').scrollIntoViewIfNeeded();
     await expect(page.getByRole('link', { name: 'Send Me a Message' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Send Me a Message' })).toHaveAttribute('href', /^mailto:/);
-    await page.getByRole('link', { name: 'Preview Portal', exact: true }).click();
-    await expect(page).toHaveURL(/\/assets\/portal-thumb\.png$/);
+    const preview = page.locator('.project-grid .preview').first();
+    const href = await preview.getAttribute('href');
+    expect(href).toBeTruthy();
+    expectOptimizedWebP(href!);
+    const destination = new URL(href!, page.url()).href;
+    await preview.click();
+    await expect(page).toHaveURL(destination);
     await page.goto('/');
     await page.locator('.hero-actions').getByRole('link', { name: 'View work' }).click();
     await expect(page).toHaveURL(/\/work\/?$/);

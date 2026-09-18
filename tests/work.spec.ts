@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { expectOptimizedWebP, imageURLs, templateImages } from './image-helpers';
 
 for (const route of ['/', '/work/']) {
   for (const width of [320, 800, 1440]) {
@@ -10,18 +11,25 @@ for (const route of ['/', '/work/']) {
         page.on('pageerror', error => errors.push(error.message));
         await page.goto(route);
         const cards = page.locator('.card');
-        await expect(cards).toHaveCount(route === '/' ? 2 : 3);
-        await expect(cards.first().locator('.badges li')).toHaveText(['Dev', 'Full Stack', 'Laravel 11']);
+        if (route === '/') await expect(cards).toHaveCount(2);
+        else expect(await cards.count(), 'All five migrated projects remain available').toBeGreaterThanOrEqual(5);
+        const firstCard = cards.first();
+        const title = (await firstCard.locator('.title').innerText()).trim();
+        const tags = await firstCard.locator('.badges li').allTextContents();
+        const id = await firstCard.getAttribute('data-project-id');
+        expect(title).not.toBe('');
+        expect(tags.length).toBeGreaterThan(0);
+        expect(id).toBeTruthy();
         await expect(cards.locator('.description')).toHaveCount(0);
-        await expect(cards.locator('.website')).toHaveCount(0);
-        const trigger = cards.first().getByRole('link', { name: 'Preview Portal' });
+        const trigger = firstCard.getByRole('link', { name: `Preview ${title}`, exact: true });
         await trigger.scrollIntoViewIfNeeded();
         await trigger.focus();
         await page.keyboard.press('Enter');
-        const dialog = page.getByRole('dialog', { name: 'Portal', exact: true });
+        const dialog = page.getByRole('dialog', { name: title, exact: true });
         await expect(dialog).toBeVisible();
-        await expect(dialog.getByRole('heading')).toHaveText('Portal');
-        await expect(dialog.locator('.badges li')).toHaveText(['Dev', 'Full Stack', 'Laravel 11']);
+        expect(new URL(page.url()).hash).toBe(`#project=${encodeURIComponent(id!)}`);
+        await expect(dialog.getByRole('heading')).toHaveText(title);
+        await expect(dialog.locator('.badges li')).toHaveText(tags);
         await expect(dialog.locator('.project-media')).toHaveAttribute('aria-busy', 'false');
         await expect(dialog.locator('.image-status')).toBeHidden();
         await expect.poll(() => dialog.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
@@ -85,23 +93,42 @@ test('nested deep links and legacy URLs open the corresponding project', async (
 });
 
 test('image failure leaves a usable dialog', async ({ page }) => {
-  await page.route('**/portal-thumb.png', route => route.abort());
   await page.goto('/work/');
-  await page.getByRole('link', { name: 'Preview Portal' }).click();
+  const portal = page.locator('.card').filter({ has: page.getByRole('link', { name: 'Preview Portal', exact: true }) });
+  const [image] = await templateImages(portal);
+  const fullImageURLs = imageURLs(image);
+  let blocked = 0;
+  // Match every responsive full-image candidate, not the old public PNG or
+  // just src: the browser normally chooses a different URL from srcset.
+  await page.route(url => fullImageURLs.has(url.href), route => {
+    blocked++;
+    return route.abort();
+  });
+  await portal.getByRole('link', { name: 'Preview Portal', exact: true }).click();
   const dialog = page.getByRole('dialog');
   await expect(dialog.getByRole('status')).toHaveText('Preview unavailable. Please close and try again.');
+  expect(blocked, 'The optimized full screenshot request was intercepted').toBeGreaterThan(0);
   await expect(dialog.locator('.project-media')).toHaveAttribute('aria-busy', 'false');
   await dialog.getByRole('button', { name: 'Close' }).click();
   await expect(dialog).toBeHidden();
 });
 
-test('without JavaScript projects retain real image links', async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
-  const page = await context.newPage();
-  await page.goto('http://localhost:4321/work/');
-  const preview = page.getByRole('link', { name: 'Preview Portal' });
-  await expect(preview).toHaveAttribute('href', '/assets/portal-thumb.png');
-  await preview.click();
-  await expect(page).toHaveURL(/\/assets\/portal-thumb.png$/);
-  await context.close();
+test.describe('project links without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('projects retain real optimized full-image links', async ({ page }) => {
+    await page.goto('/work/');
+    const preview = page.getByRole('link', { name: 'Preview Portal', exact: true });
+    const href = await preview.getAttribute('href');
+    expect(href).toBeTruthy();
+    expectOptimizedWebP(href!);
+    const destination = new URL(href!, page.url()).href;
+    const response = await Promise.all([
+      page.waitForResponse(response => response.url() === destination),
+      preview.click(),
+    ]).then(([response]) => response);
+    await expect(page).toHaveURL(destination);
+    expect(response.ok()).toBe(true);
+    expect(response.headers()['content-type']).toContain('image/webp');
+  });
 });

@@ -2,20 +2,36 @@
 import type { CollectionEntry } from 'astro:content';
 import Icon from './Icon.astro';
 import ProjectBadges from './ProjectBadges.astro';
+import { Image, getImage } from 'astro:assets';
 
 interface Props {
 	project: CollectionEntry<'work'>;
 }
 
 const { data, id } = Astro.props.project;
+// Share the full-size transform with the no-JavaScript fallback link.
+const previewWidth = Math.min(1920, data.img.width);
+const fullPreview = await getImage({ src: data.img, width: previewWidth, format: 'webp' });
 ---
 
 <article class="card" data-project-id={id}>
-	<a class="preview" href={data.img} data-project-open={id} aria-label={`Preview ${data.title}`} aria-haspopup="dialog" aria-controls="project-lightbox">
-		<img src={data.img} alt={data.img_alt || data.title} loading="lazy" decoding="async" />
+	<a class="preview" href={fullPreview.src} data-project-open={id} aria-label={`Preview ${data.title}`} aria-haspopup="dialog" aria-controls="project-lightbox">
+		<Image
+			src={data.img}
+			alt={data.img_alt || data.title}
+			width={720}
+			height={450}
+			widths={[360, 720, 1080, 1440]}
+			sizes="(min-width: 78rem) 39rem, (min-width: 50em) 50vw, calc(100vw - 3rem)"
+			format="webp"
+			fit="cover"
+			position="top"
+			loading="lazy"
+			decoding="async"
+		/>
 	</a>
 	<div class="details">
-		<h3 class="title"><a href={data.img} data-project-open={id} aria-haspopup="dialog" aria-controls="project-lightbox">{data.title}</a></h3>
+		<h3 class="title"><a href={fullPreview.src} data-project-open={id} aria-haspopup="dialog" aria-controls="project-lightbox">{data.title}</a></h3>
 		<ProjectBadges tags={data.tags} />
 		{data.url && <a class="website" href={data.url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${data.title} website (opens in a new tab)`}>Visit website <Icon icon="arrow-right" size="1em" /></a>}
 	</div>
@@ -27,7 +43,16 @@ const { data, id } = Astro.props.project;
 		</header>
 		<div class="project-media" aria-busy="true">
 			<p class="image-status" role="status">Loading preview…</p>
-			<img src={data.img} alt={data.img_alt || data.title} decoding="async" />
+			<Image
+				src={data.img}
+				alt={data.img_alt || data.title}
+				width={previewWidth}
+				widths={[480, 960, 1440, 1920]}
+				sizes="(min-width: 72rem) 60rem, calc(100vw - 8rem)"
+				format="webp"
+				loading="eager"
+				decoding="async"
+			/>
 		</div>
 	</template>
 </article>

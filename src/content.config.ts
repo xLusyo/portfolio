@@ -5,7 +5,7 @@ export const collections = {
 	work: defineCollection({
 		// Load Markdown files in the src/content/work directory.
 		loader: glob({ base: './src/content/work', pattern: '**/*.md' }),
-		schema: z.object({
+		schema: ({ image }) => z.object({
 			title: z.string(),
 			description: z.string().optional(),
 			url: z.string().url().refine((value) => /^https?:\/\//i.test(value), {
@@ -13,7 +13,7 @@ export const collections = {
 			}).optional(),
 			publishDate: z.coerce.date(),
 			tags: z.array(z.string()),
-			img: z.string(),
+			img: image(),
 			img_alt: z.string().optional(),
 		}),
 	}),

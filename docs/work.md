@@ -4,7 +4,7 @@ The homepage's Selected Work and `/work/` share `PortfolioPreview.astro` and `Pr
 
 ## Add or update a project
 
-1. Put the real project screenshot in `public/assets/`.
+1. Put the real project screenshot in `src/assets/` so Astro can optimize it.
 2. Create a `.md` file under `src/content/work/` (nested folders work).
 3. Add frontmatter following this example:
 
@@ -12,7 +12,7 @@ The homepage's Selected Work and `/work/` share `PortfolioPreview.astro` and `Pr
 ---
 title: Project Name
 publishDate: 2026-01-15 00:00:00
-img: /assets/project-thumb.webp
+img: ../../assets/project-thumb.webp
 img_alt: Project Name homepage showing its services and navigation
 tags:
   - WordPress
@@ -21,6 +21,8 @@ tags:
 # url: https://your-project-domain.com
 ---
 ```
+
+The `img` value is relative to the Markdown file. For a file in `src/content/work/nested/`, use `../../../assets/project-thumb.webp`. Astro's `image()` schema validates the source and supplies its dimensions. Cards use responsive, top-cropped 16:10 WebP thumbnails; lightboxes and no-JavaScript links use optimized full screenshots. Keep originals in `src/assets/`, not `public/`, to ensure they enter the image pipeline.
 
 No Markdown body or description is needed. The presentation intentionally contains only the screenshot, project name, technology badges, and optional website link. The schema still accepts legacy `description` values but does not display them. Do not reintroduce case-study paragraphs into cards or lightboxes.
 

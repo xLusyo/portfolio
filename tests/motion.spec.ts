@@ -5,7 +5,7 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 
     await page.setViewportSize(viewport);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
-    const root = viewport.width <= 760 ? '.portfolio' : '#content';
+    const root = viewport.width <= 1024 ? '.portfolio' : '#content';
     expect(await page.locator(root).evaluate(element => getComputedStyle(element).scrollBehavior)).toBe('auto');
     await page.locator('.section-nav a[href="#projects"]').click();
     await expect(page.locator('.section-nav a[href="#projects"]')).toHaveAttribute('aria-current', 'location');
@@ -17,7 +17,7 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 
     await page.setViewportSize(viewport);
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto('/');
-    const root = viewport.width <= 760 ? '.portfolio' : '#content';
+    const root = viewport.width <= 1024 ? '.portfolio' : '#content';
     expect(await page.locator(root).evaluate(element => getComputedStyle(element).scrollBehavior)).toBe('smooth');
     await page.locator('.section-nav a[href="#tools"]').click();
     await expect(page.locator('.section-nav a[href="#tools"]')).toHaveAttribute('aria-current', 'location');

@@ -5,8 +5,8 @@ for (const width of [390, 1440]) {
   test(`${width}px: contact dialog traps focus, locks the background, and restores its opener`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');
-    const opener = page.locator(width <= 760 ? '.mobile-contact button' : '.profile [data-contact]');
-    const root = page.locator(width <= 760 ? '.portfolio' : '#content');
+    const opener = page.locator(width <= 1024 ? '.mobile-contact button' : '.profile [data-contact]');
+    const root = page.locator(width <= 1024 ? '.portfolio' : '#content');
     await opener.click();
     const dialog = page.locator('#contact-dialog');
     const close = page.getByRole('button', { name: 'Close contact dialog' });

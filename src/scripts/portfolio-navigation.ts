@@ -5,7 +5,7 @@ export function setupNavigation() {
 	const content = document.querySelector<HTMLElement>('.content');
 	const navigation = document.querySelector<HTMLElement>('.section-nav');
 	if (!portfolio || !content || !navigation) return;
-	const mobile = matchMedia('(max-width: 760px)');
+	const mobile = matchMedia('(max-width: 1024px)');
 	let frame = 0;
 	function updateActive() {
 		frame = 0;

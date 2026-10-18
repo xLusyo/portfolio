@@ -3,7 +3,9 @@ import { expect, test } from '@playwright/test';
 const viewports = [
   { width: 320, height: 740 }, { width: 375, height: 812 },
   { width: 390, height: 844 }, { width: 760, height: 900 },
-  { width: 761, height: 900 }, { width: 1280, height: 800 },
+  { width: 761, height: 900 }, { width: 768, height: 1024 },
+  { width: 1024, height: 768 }, { width: 1025, height: 900 },
+  { width: 1280, height: 800 },
   { width: 1440, height: 900 },
 ];
 
@@ -16,10 +18,13 @@ for (const viewport of viewports) {
     await page.evaluate(() => document.fonts.ready);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('ChristianBaloncio.');
     await expect(page.locator('.card')).toHaveCount(5);
+    await expect(page.locator('.tool-grid .tool')).toHaveCount(6);
     const projectColumns = await page.locator('.project-grid').evaluate(element => getComputedStyle(element).gridTemplateColumns.split(' ').length);
-    expect(projectColumns).toBe(viewport.width > 1050 ? 3 : viewport.width > 760 ? 2 : 1);
+    expect(projectColumns).toBe(viewport.width > 1024 ? 3 : 1);
     expect(await page.locator('main > section').evaluateAll(elements => elements.map(element => element.id))).toEqual(['about', 'experience', 'projects', 'tools']);
-    await expect(page.locator('.experience-empty')).toHaveText('Work history details have not been provided yet.');
+    await expect(page.locator('.experience-empty')).toHaveCount(0);
+    await expect(page.locator('.job h3')).toHaveText(['Secure Line Marketing', 'Smith Brothers Media', 'Digital Feet Corporation']);
+    await expect(page.locator('.job-highlights li')).toHaveCount(10);
     await expect(page.locator('.portrait img')).toHaveAttribute('alt', /Christian Baloncio/);
     await page.locator('.portrait img').evaluate((image: HTMLImageElement) => image.decode());
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(viewport.width);
@@ -28,7 +33,7 @@ for (const viewport of viewports) {
 
     const profile = await page.locator('.profile').boundingBox();
     const actions = await page.locator('.profile-actions').boundingBox();
-    if (viewport.width > 760) {
+    if (viewport.width > 1024) {
       expect(actions!.y + actions!.height).toBeLessThan(viewport.height);
       await expect(page.locator('.mobile-contact')).toBeHidden();
       expect(await page.locator('.profile-info').evaluate(element => element.scrollHeight <= element.clientHeight)).toBe(true);
@@ -47,16 +52,17 @@ for (const viewport of viewports) {
     }
     await page.locator('.section-nav a[href="#tools"]').click();
     await expect(page.locator('.section-nav a[href="#tools"]')).toHaveAttribute('aria-current', 'location');
-    const root = viewport.width <= 760 ? '.portfolio' : '#content';
+    const root = viewport.width <= 1024 ? '.portfolio' : '#content';
+    expect(await page.locator('.tool-grid').evaluate(element => getComputedStyle(element).gridTemplateColumns.split(' ').length)).toBe(viewport.width > 1024 ? 3 : viewport.width > 760 ? 2 : 1);
     await page.locator(root).evaluate(element => { element.scrollTop = element.scrollHeight; });
     await expect(page.locator('.section-nav a[href="#tools"]')).toHaveAttribute('aria-current', 'location');
     const nav = await page.locator('.section-nav').boundingBox();
     expect(nav!.y).toBeGreaterThanOrEqual(0);
     const footer = await page.locator('.content footer').boundingBox();
-    if (viewport.width <= 760) {
+    if (viewport.width <= 1024) {
       const contact = await page.locator('.mobile-contact').boundingBox();
       expect(footer!.y + footer!.height).toBeLessThanOrEqual(contact!.y);
-      expect(await page.locator('.tool-grid').evaluate(element => getComputedStyle(element).gridTemplateColumns.split(' ').length)).toBe(2);
+      expect(await page.locator('.tool-grid').evaluate(element => getComputedStyle(element).gridTemplateColumns.split(' ').length)).toBe(viewport.width > 760 ? 2 : 1);
       expect(await page.locator('.project-grid').evaluate(element => getComputedStyle(element).gridTemplateColumns.split(' ').length)).toBe(1);
     }
     expect(await page.locator(root).evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);

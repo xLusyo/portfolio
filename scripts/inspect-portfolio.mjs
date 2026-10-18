@@ -20,6 +20,9 @@ for (const [width, height] of [[1440, 900], [1280, 800], [390, 844], [375, 812]]
 			overflow: getComputedStyle(element).overflow, display: getComputedStyle(element).display,
 		})),
 	}))));
+	await page.locator('.section-nav a[href="#experience"]').click();
+	await page.locator('.company-icon img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
+	await page.screenshot({ path: `artifacts/portfolio/experience-${width}x${height}.png` });
 	await page.locator('.section-nav a[href="#tools"]').click();
 	await page.screenshot({ path: `artifacts/portfolio/tools-${width}x${height}.png` });
 	await page.locator('.section-nav a[href="#projects"]').click();

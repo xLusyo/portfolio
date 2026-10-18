@@ -20,7 +20,7 @@ npm run preview
 
 `src/data/portfolio.ts` contains the profile, summary, contact links, experience, tools, résumé configuration, and project ordering entry point. Projects remain Markdown-first in `src/content/work/`, with original images in `src/assets/`; see `docs/work.md`.
 
-No dated employment history or résumé PDF has been supplied. Work Experience explicitly says so, and the download is labeled Sample. Add verified work history to `experience`. Put a supplied PDF in `public/` and set `resume.pdf` to its root-relative URL, for example `/resume.pdf`.
+Work Experience contains the supplied roles, dates, employment types, and achievements in `experience`. No résumé PDF has been supplied, so the download remains labeled Sample. Put a supplied PDF in `public/` and set `resume.pdf` to its root-relative URL, for example `/resume.pdf`.
 
 The contact form opens an email draft. It does not send messages or use a backend. Website links are omitted until a real URL is supplied.
 

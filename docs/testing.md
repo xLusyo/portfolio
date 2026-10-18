@@ -13,7 +13,7 @@ Playwright uses Chromium and a local Astro server at `http://localhost:4321`. It
 
 ## Coverage
 
-- Requested viewports: 1440×900, 1280×800, 390×844, and 375×812. Additional checks at 320px and both sides of the 760px breakpoint.
+- Requested viewports: 1440×900, 1280×800, 390×844, and 375×812. Additional checks at 320px and tablet widths of 768px and 1024px, and both sides of the 1024px layout breakpoint.
 - Stationary desktop profile, independently scrolling right column, and a single mobile scroll container.
 - Sticky active section navigation, native anchors, breakpoint resizing, and final-content clearance above the mobile contact action.
 - No horizontal overflow, responsive project grids, optimized portrait/project images, lazy thumbnail loading, and deferred full screenshots.

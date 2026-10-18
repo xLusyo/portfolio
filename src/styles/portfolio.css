@@ -163,6 +163,9 @@ img {
 }
 
 .portrait-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
 	position: absolute;
 	bottom: 16px;
 	left: 16px;
@@ -171,6 +174,25 @@ img {
 	font-size: 11px;
 	padding: 8px 11px;
 	border-radius: 30px;
+}
+
+.availability-dot {
+	width: 7px;
+	height: 7px;
+	flex-shrink: 0;
+	border-radius: 50%;
+	background: #bad6a3;
+}
+
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+	.availability-dot {
+		animation: availability-pulse 1.8s ease-in-out infinite;
+	}
+}
+
+@keyframes availability-pulse {
+	0%, 100% { opacity: 1; transform: scale(1); }
+	50% { opacity: 0.45; transform: scale(0.8); }
 }
 
 .profile-info {

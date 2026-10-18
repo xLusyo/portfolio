@@ -6,7 +6,7 @@ import { portfolio } from '../data/portfolio';
 <aside class="profile" aria-label="Profile and contact information">
 	<div class="portrait" data-motion="portrait">
 		<Image src={portfolio.portrait} alt={portfolio.portraitAlt} width={384} widths={[320, 384, 768, 1024]} sizes="(min-width: 1025px) 330px, calc(100vw - 16px)" format="webp" loading="eager" decoding="async" fetchpriority="high" />
-		<span class="portrait-label">Based in the {portfolio.location}</span>
+		<span class="portrait-label"><span class="availability-dot" aria-hidden="true"></span>{portfolio.availability}</span>
 	</div>
 	<div class="profile-info" data-motion="profile">
 		<div>

@@ -24,6 +24,7 @@ export const portfolio = {
 	initials: 'CB',
 	role: 'Full Stack Web Developer',
 	location: 'Philippines',
+	availability: 'Looking for work',
 	portrait,
 	portraitAlt: 'Christian Baloncio standing with his arms crossed',
 	email: 'work.christianbaloncio@gmail.com',

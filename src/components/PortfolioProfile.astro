@@ -4,11 +4,11 @@ import Icon from './Icon.astro';
 import { portfolio } from '../data/portfolio';
 ---
 <aside class="profile" aria-label="Profile and contact information">
-	<div class="portrait">
+	<div class="portrait" data-motion="portrait">
 		<Image src={portfolio.portrait} alt={portfolio.portraitAlt} width={384} widths={[320, 384, 768, 1024]} sizes="(min-width: 1025px) 330px, calc(100vw - 16px)" format="webp" loading="eager" decoding="async" fetchpriority="high" />
 		<span class="portrait-label">Based in the {portfolio.location}</span>
 	</div>
-	<div class="profile-info">
+	<div class="profile-info" data-motion="profile">
 		<div>
 			<span class="eyebrow">DEVELOPMENT & AUTOMATION</span>
 			<h1>{portfolio.name.split(' ')[0]}<br />{portfolio.name.split(' ').slice(1).join(' ')}<span class="name-dot">.</span></h1>

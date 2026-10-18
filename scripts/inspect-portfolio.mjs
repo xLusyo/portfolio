@@ -3,12 +3,16 @@ import { mkdir } from 'node:fs/promises';
 
 const browser = await chromium.launch();
 await mkdir('artifacts/portfolio', { recursive: true });
-for (const [width, height] of [[1440, 900], [1280, 800], [390, 844], [375, 812]]) {
+for (const [width, height] of [[1440, 900], [1280, 800], [1920, 1080], [2560, 1440], [3840, 2160], [390, 844], [375, 812]]) {
 	const page = await browser.newPage({ viewport: { width, height }, reducedMotion: 'reduce' });
 	page.on('pageerror', error => console.error(error));
 	await page.goto('http://localhost:4321/');
 	await page.evaluate(() => document.fonts.ready);
 	await page.locator('.portrait img').evaluate(image => image.decode());
+	await page.locator('.preview img').evaluateAll(images => Promise.all(images.filter(image => {
+		const rect = image.getBoundingClientRect();
+		return rect.top < innerHeight && rect.bottom > 0;
+	}).map(image => image.decode())));
 	await page.screenshot({ path: `artifacts/portfolio/home-${width}x${height}.png` });
 	console.log(JSON.stringify(await page.evaluate(() => ({
 		viewport: [innerWidth, innerHeight],

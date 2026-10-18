@@ -11,16 +11,16 @@ const projects = await getPortfolioProjects();
 	</nav>
 	<section class="panel about" id="about" aria-labelledby="about-title">
 		<div class="section-heading"><span class="eyebrow">01 / INTRODUCTION</span><span class="small-symbol" aria-hidden="true">✳</span></div>
-		<h2 id="about-title">{portfolio.headline[0]}<br /><span>{portfolio.headline[1]}</span></h2>
-		<div class="summary">{portfolio.summary.map(paragraph => <p>{paragraph}</p>)}</div>
-		<div class="about-bottom"><span>Develop with care. Build with purpose.</span><a href="#projects">Explore my work <span aria-hidden="true">↘</span></a></div>
+		<h2 id="about-title" data-motion="intro">{portfolio.headline[0]}<br /><span>{portfolio.headline[1]}</span></h2>
+		<div class="summary" data-motion="intro">{portfolio.summary.map(paragraph => <p>{paragraph}</p>)}</div>
+		<div class="about-bottom" data-motion="intro"><span>Develop with care. Build with purpose.</span><a href="#projects">Explore my work <span aria-hidden="true">↘</span></a></div>
 	</section>
 	<section class="panel experience" id="experience" aria-labelledby="experience-title">
 		<div class="section-heading"><h2 id="experience-title">Work Experience</h2><span class="eyebrow">02 / THE JOURNEY</span></div>
 		{portfolio.experience.length ? (
 			<div class="timeline">
 				{portfolio.experience.map(job => (
-					<article class="job">
+					<article class="job" data-motion="experience">
 						<div class="company-icon" aria-hidden="true">
 							<img src={job.logo} alt="" width="37" height="37" loading="lazy" decoding="async" />
 						</div>
@@ -50,7 +50,7 @@ const projects = await getPortfolioProjects();
 		<p class="section-intro">The tools I use, from interface to implementation.</p>
 		<div class="tool-grid">
 			{portfolio.tools.map(tool => (
-				<article class="tool">
+				<article class="tool" data-motion="tool">
 					<span class="tool-icon"><TechIcon icon={tool.icon} /></span>
 					<div><h3>{tool.name}</h3><p>{tool.description}</p></div>
 					<ul class="tool-technologies" aria-label={`${tool.name} technologies`}>

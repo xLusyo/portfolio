@@ -7,6 +7,8 @@ const viewports = [
   { width: 1024, height: 768 }, { width: 1025, height: 900 },
   { width: 1280, height: 800 },
   { width: 1440, height: 900 },
+  { width: 1920, height: 1080 }, { width: 2560, height: 1440 },
+  { width: 3840, height: 2160 },
 ];
 
 for (const viewport of viewports) {
@@ -29,11 +31,21 @@ for (const viewport of viewports) {
     await page.locator('.portrait img').evaluate((image: HTMLImageElement) => image.decode());
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(viewport.width);
     expect(await page.locator('.portfolio').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+    const shell = await page.locator('.portfolio').boundingBox();
+    const expectedWidth = Math.min(viewport.width, 1920);
+    expect(shell!.width).toBe(expectedWidth);
+    expect(shell!.x).toBe((viewport.width - expectedWidth) / 2);
+    expect(shell!.y).toBe(0);
+    expect(shell!.height).toBe(viewport.height);
     await page.screenshot({ path: testInfo.outputPath(`home-${viewport.width}x${viewport.height}.png`) });
 
     const profile = await page.locator('.profile').boundingBox();
     const actions = await page.locator('.profile-actions').boundingBox();
     if (viewport.width > 1024) {
+      const portrait = await page.locator('.portrait').boundingBox();
+      const information = await page.locator('.profile-info').boundingBox();
+      expect(portrait!.height).toBeLessThanOrEqual(480);
+      expect(information!.y).toBeCloseTo(portrait!.y + portrait!.height + 12, 1);
       expect(actions!.y + actions!.height).toBeLessThan(viewport.height);
       await expect(page.locator('.mobile-contact')).toBeHidden();
       expect(await page.locator('.profile-info').evaluate(element => element.scrollHeight <= element.clientHeight)).toBe(true);
@@ -80,9 +92,10 @@ for (const scheme of ['light', 'dark'] as const) {
     expect(await page.locator('.portfolio').evaluate(element => getComputedStyle(element).backgroundColor)).toBe('rgb(3, 3, 3)');
     expect(await page.locator('html').evaluate(element => getComputedStyle(element).backgroundColor)).toBe('rgb(3, 3, 3)');
     const shell = await page.locator('.portfolio').boundingBox();
-    expect(shell!.x).toBe(0);
+    const viewportWidth = await page.evaluate(() => innerWidth);
+    expect(shell!.x).toBe((viewportWidth - Math.min(viewportWidth, 1920)) / 2);
     expect(shell!.y).toBe(0);
-    expect(shell!.width).toBe(await page.evaluate(() => innerWidth));
+    expect(shell!.width).toBe(Math.min(viewportWidth, 1920));
   });
 }
 

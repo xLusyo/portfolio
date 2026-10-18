@@ -1,6 +1,6 @@
 # Christian Baloncio’s portfolio
 
-A single-page personal portfolio built with Astro, strict TypeScript, native CSS, and optimized local images. The approved source is `docs/Redesign/Portfolio_Mockup_Export.zip`; the final site fills the viewport edge to edge and omits all mockup presentation controls and the light outer canvas.
+A single-page personal portfolio built with Astro, strict TypeScript, native CSS, GSAP entrance animations, and optimized local images. The approved source is `docs/Redesign/Portfolio_Mockup_Export.zip`; the final site fills the viewport up to 1920px wide, centers on larger screens with a continuous near-black background, and omits all mockup presentation controls and the light outer canvas.
 
 ## Run locally
 

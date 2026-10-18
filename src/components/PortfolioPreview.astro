@@ -14,7 +14,7 @@ const previewWidth = Math.min(1920, data.img.width);
 const fullPreview = await getImage({ src: data.img, width: previewWidth, format: 'webp' });
 ---
 
-<article class="card" data-project-id={id}>
+<article class="card" data-project-id={id} data-motion="project">
 	<a class="preview" href={fullPreview.src} data-project-open={id} aria-label={`Preview ${data.title}`} aria-haspopup="dialog" aria-controls="project-lightbox">
 		<Image
 			src={data.img}
@@ -22,7 +22,7 @@ const fullPreview = await getImage({ src: data.img, width: previewWidth, format:
 			width={720}
 			height={450}
 			widths={[360, 720, 1080, 1440]}
-			sizes="(min-width: 1025px) calc((100vw - 460px) / 3), calc(100vw - 62px)"
+			sizes="(min-width: 1920px) 487px, (min-width: 1025px) calc((100vw - 460px) / 3), calc(100vw - 62px)"
 			format="webp"
 			fit="cover"
 			position="top"

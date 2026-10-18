@@ -1,8 +1,4 @@
 ---
-import Hero from '../components/Hero.astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import PortfolioLayout from '../layouts/PortfolioLayout.astro';
 ---
-
-<BaseLayout title="Not Found" description="404 Error — this page was not found">
-	<Hero title="Page Not Found" tagline="Not found" />
-</BaseLayout>
+<PortfolioLayout><main class="not-found"><h1>Page not found.</h1><p>The portfolio now lives on one page.</p><a class="button contact" href="/">Back to the portfolio <span aria-hidden="true">↗</span></a></main></PortfolioLayout>

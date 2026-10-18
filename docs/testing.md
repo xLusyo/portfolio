@@ -1,32 +1,36 @@
 # Browser regression tests
 
-## Setup and commands
+## Commands
 
 ```sh
 npm install
 npx playwright install chromium
+npm run build
 npm run test:e2e
 ```
 
-Playwright reuses the local Astro server at `http://localhost:4321` when one is running, or starts and stops its own server. In CI it always starts its own server. Use `npm run test:e2e:ui` for interactive debugging.
+Playwright uses Chromium and a local Astro server at `http://localhost:4321`. It reuses an existing development server or starts one. `npm run test:e2e:ui` opens interactive debugging. In restricted environments, Chromium may require permission to launch outside the filesystem sandbox.
 
 ## Coverage
 
-The Chromium suite in `tests/homepage.spec.ts` checks six widths (320, 390, 768, 800, 1024, 1440px) in both light and dark themes:
+- Requested viewports: 1440×900, 1280×800, 390×844, and 375×812. Additional checks at 320px and both sides of the 760px breakpoint.
+- Stationary desktop profile, independently scrolling right column, and a single mobile scroll container.
+- Sticky active section navigation, native anchors, breakpoint resizing, and final-content clearance above the mobile contact action.
+- No horizontal overflow, responsive project grids, optimized portrait/project images, lazy thumbnail loading, and deferred full screenshots.
+- Project dialogs: keyboard entry, focus containment, Escape, Close, backdrop dismissal, restored focus, scroll locking, image failure, and no-JavaScript image links.
+- Contact dialogs: validation, keyboard behavior, encoded email-draft recipient/subject/body, and accurate draft-only feedback. Tests observe the mailto navigation; they do not send email or test an installed mail client.
+- Sample résumé download filename and file contents.
+- Old About, Work, and nested project URL redirects; malformed project links; useful 404 navigation.
+- Consistent approved colors under both system color schemes, reduced motion, forced colors, and absence of mockup presentation controls.
 
-- No horizontal page overflow.
-- A bounded portrait with a consistent 4:5 crop, including tablet widths.
-- All 18 technology SVGs sized to 24px and contained in their label rows.
-- Compact desktop navigation and a hero that fits the tested desktop viewport.
-- Successfully loaded portrait and lazy-loaded project images.
-- No uncaught page errors.
+## Screenshots
 
-Additional tests exercise mobile menu opening, Escape/focus restoration, responsive resizing, navigation, and theme persistence. `tests/work.spec.ts` covers project lightboxes on the homepage and `/work/` at 320, 800, and 1440px in both themes, image loading/failure, keyboard and backdrop dismissal, focus restoration, scroll locking, nested deep links, legacy redirects, and no-JavaScript image links.
+Successful geometry tests capture the homepage and bottom content under `test-results/`. Dialog tests also capture screenshots. Failures retain a screenshot and trace; use `npx playwright show-report` to inspect them.
 
-## Results
+Run `node scripts/inspect-portfolio.mjs` with the local server running to save homepage, tools, and project-dialog screenshots at all four requested sizes under `artifacts/portfolio/`.
 
-Each successful layout test captures a full-page screenshot under `test-results/`. Failures include a screenshot and trace. View the HTML report using `npx playwright show-report`.
+Captures are inspection artifacts rather than pixel-diff baselines. Local fonts make typography independent of network access. Chromium emulation does not substitute for physical iOS/Android testing, and external email delivery is outside this static site’s functionality.
 
-Screenshots are inspection artifacts, not pixel-diff baselines. Geometry assertions provide the automated layout regression checks. Reports and captures are gitignored. External web fonts can affect timing and typography, so screenshot comparisons should use the same browser/platform and font availability.
+## Latest verification
 
-The original regression checks were verified to fail before the fixes: technology SVGs retained a 127px intrinsic height in 24px slots, and the tablet portrait became a landscape crop because width expansion conflicted with a fixed maximum height.
+The production build, TypeScript check (`node_modules/.bin/tsc --noEmit`), and all 40 Chromium browser tests passed on 2026-10-18. The four requested viewport screenshots were captured and visually inspected after removing presentation controls and the outer canvas. Generated static redirect targets and the sample résumé output were also inspected.

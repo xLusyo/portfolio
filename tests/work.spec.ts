@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { expectOptimizedWebP, imageURLs, templateImages } from './image-helpers';
 
-for (const route of ['/', '/work/']) {
+for (const route of ['/']) {
   for (const width of [320, 800, 1440]) {
     for (const colorScheme of ['light', 'dark'] as const) {
       test(`${route} ${width}px ${colorScheme}: minimal project lightbox`, async ({ page }, testInfo) => {
@@ -11,8 +11,7 @@ for (const route of ['/', '/work/']) {
         page.on('pageerror', error => errors.push(error.message));
         await page.goto(route);
         const cards = page.locator('.card');
-        if (route === '/') await expect(cards).toHaveCount(2);
-        else expect(await cards.count(), 'All five migrated projects remain available').toBeGreaterThanOrEqual(5);
+        await expect(cards).toHaveCount(5);
         const firstCard = cards.first();
         const title = (await firstCard.locator('.title').innerText()).trim();
         const tags = await firstCard.locator('.badges li').allTextContents();
@@ -64,10 +63,10 @@ for (const route of ['/', '/work/']) {
 }
 
 test('all projects open independently; Close and backdrop restore focus', async ({ page }) => {
-  await page.goto('/work/');
+  await page.goto('/');
   for (const trigger of await page.locator('.preview').all()) {
     await trigger.click();
-    const dialog = page.getByRole('dialog');
+    const dialog = page.locator('#project-lightbox');
     await expect(dialog).toBeVisible();
     await dialog.getByRole('heading').click();
     await expect(dialog).toBeVisible();
@@ -82,18 +81,18 @@ test('all projects open independently; Close and backdrop restore focus', async 
 });
 
 test('nested deep links and legacy URLs open the corresponding project', async ({ page }) => {
-  await page.goto('/work/#project=nested%2Fduvet-genius');
+  await page.goto('/#project=nested%2Fduvet-genius');
   await expect(page.getByRole('dialog', { name: 'Pemble Painting', exact: true })).toBeVisible();
   await page.reload();
   await expect(page.getByRole('dialog', { name: 'Pemble Painting', exact: true })).toBeVisible();
   await page.goto('/work/portal-df');
   await expect(page.getByRole('dialog', { name: 'Portal', exact: true })).toBeVisible();
-  await page.goto('/work/#project=%INVALID');
-  await expect(page.getByRole('dialog')).toBeHidden();
+  await page.goto('/#project=%INVALID');
+  await expect(page.locator('#project-lightbox')).toBeHidden();
 });
 
 test('image failure leaves a usable dialog', async ({ page }) => {
-  await page.goto('/work/');
+  await page.goto('/');
   const portal = page.locator('.card').filter({ has: page.getByRole('link', { name: 'Preview Portal', exact: true }) });
   const [image] = await templateImages(portal);
   const fullImageURLs = imageURLs(image);
@@ -105,7 +104,7 @@ test('image failure leaves a usable dialog', async ({ page }) => {
     return route.abort();
   });
   await portal.getByRole('link', { name: 'Preview Portal', exact: true }).click();
-  const dialog = page.getByRole('dialog');
+  const dialog = page.locator('#project-lightbox');
   await expect(dialog.getByRole('status')).toHaveText('Preview unavailable. Please close and try again.');
   expect(blocked, 'The optimized full screenshot request was intercepted').toBeGreaterThan(0);
   await expect(dialog.locator('.project-media')).toHaveAttribute('aria-busy', 'false');
@@ -117,7 +116,7 @@ test.describe('project links without JavaScript', () => {
   test.use({ javaScriptEnabled: false });
 
   test('projects retain real optimized full-image links', async ({ page }) => {
-    await page.goto('/work/');
+    await page.goto('/');
     const preview = page.getByRole('link', { name: 'Preview Portal', exact: true });
     const href = await preview.getAttribute('href');
     expect(href).toBeTruthy();

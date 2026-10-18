@@ -1,12 +1,12 @@
 # Work gallery: Markdown-first content
 
-The homepage's Selected Work and `/work/` share `PortfolioPreview.astro` and `ProjectLightbox.astro`. Clicking an image or project name opens an accessible native lightbox rather than a case-study page. Keep this model for future projects.
+All project entries appear on the homepage, newest first. Images and titles open accessible native dialogs; there are no standalone gallery or case-study pages.
 
 ## Add or update a project
 
-1. Put the real project screenshot in `src/assets/` so Astro can optimize it.
-2. Create a `.md` file under `src/content/work/` (nested folders work).
-3. Add frontmatter following this example:
+1. Put the real screenshot in `src/assets/` so Astro can optimize it.
+2. Create a Markdown file under `src/content/work/`; nested folders are supported.
+3. Supply frontmatter:
 
 ```yaml
 ---
@@ -17,31 +17,24 @@ img_alt: Project Name homepage showing its services and navigation
 tags:
   - WordPress
   - Custom Theme
-# Optional: use only a verified public destination.
-# url: https://your-project-domain.com
+# url: https://verified-public-destination.example
 ---
 ```
 
-The `img` value is relative to the Markdown file. For a file in `src/content/work/nested/`, use `../../../assets/project-thumb.webp`. Astro's `image()` schema validates the source and supplies its dimensions. Cards use responsive, top-cropped 16:10 WebP thumbnails; lightboxes and no-JavaScript links use optimized full screenshots. Keep originals in `src/assets/`, not `public/`, to ensure they enter the image pipeline.
+Image paths are relative to each Markdown file; nested entries need another `../`. The collection validates image metadata. Cards show the screenshot, title, badges, and an optional verified website link. Keep entries frontmatter-only; descriptions and case-study bodies are not displayed. Do not invent public project destinations.
 
-No Markdown body or description is needed. The presentation intentionally contains only the screenshot, project name, technology badges, and optional website link. The schema still accepts legacy `description` values but does not display them. Do not reintroduce case-study paragraphs into cards or lightboxes.
+`src/data/portfolio.ts` exports `getPortfolioProjects()`, the central selection and ordering entry point. All existing projects are included so retiring `/work/` loses no content.
 
-`url` must be an absolute HTTP(S) URL. When omitted, no website link is rendered. Do not guess URLs or link private client portals. Existing entries have no verified URL supplied, so their links remain omitted. Website links are separate from preview triggers and open in a new tab with `noopener noreferrer`.
+## Links and redirects
 
-## Ordering and URLs
+`/#project=portal-df` opens a project directly. Encode nested IDs, for example `/#project=nested%2Fduvet-genius`. Keep entry filenames stable because they determine project IDs.
 
-- Projects sort newest first by `publishDate`.
-- The homepage shows the two newest entries; `/work/` shows all entries.
-- The Markdown path determines the project ID. Preserve existing filenames unless you also plan a URL migration.
-- `/work/#project=portal-df` opens a project directly.
-- Nested IDs are encoded, for example `/work/#project=nested%2Fduvet-genius`.
-- Old `/work/<id>` routes generate Astro static redirects to the matching gallery lightbox. Static hosting uses a meta refresh; configure server-level 301s separately if required by your host.
-- Without JavaScript, image and title links still open the screenshot directly. The gallery's names, badges, and website links remain usable.
+`/work/` redirects to `/#projects`. Existing `/work/<id>` URLs redirect directly to the corresponding homepage dialog. `/about/` redirects to `/#about`. Astro’s static build emits HTML redirect pages; HTTP redirect status codes require host-level configuration.
 
-## Interaction and styling
+Without JavaScript, image and title links open the optimized full screenshot. Optional website links remain separate from preview triggers and open in a new tab with `noopener noreferrer`.
 
-The shared dialog supports Escape, Close, outside-click dismissal, modal focus containment, focus restoration, and background scroll locking. A sticky Close toolbar stays reachable for tall screenshots. Preview images load on demand from inert templates with loading/error feedback. The same green brand tokens, Public Sans/Rubik typography, rounded screenshot frames, and compact outlined badges work in both themes. No extra frontend dependency is required.
+## Images and dialogs
 
-## Verification
+Responsive thumbnails are top-cropped 16:10 WebP images. Full screenshots keep their original proportions and load on demand from inert templates. Dialogs support keyboard focus containment, Escape, Close, backdrop dismissal, focus restoration, background scroll locking, and loading/error feedback. A sticky Close toolbar stays reachable for tall images.
 
-Run `npm run build` and `npm run test:e2e`. `tests/work.spec.ts` covers gallery previews on both routes, mobile/desktop and light/dark layouts, dismissal and keyboard behavior, deep links, redirects, and image failure handling.
+Run `npm run build` and `npm run test:e2e` after changes. Image, gallery, deep-link, redirect, and failure tests cover the single-page gallery.

@@ -1,86 +1,20 @@
 ---
-import { getCollection } from 'astro:content';
-import CallToAction from '../components/CallToAction.astro';
-import ContactCTA from '../components/ContactCTA.astro';
-import Icon from '../components/Icon.astro';
-import PortfolioPreview from '../components/PortfolioPreview.astro';
+import PortfolioContact from '../components/PortfolioContact.astro';
+import PortfolioProfile from '../components/PortfolioProfile.astro';
+import PortfolioSections from '../components/PortfolioSections.astro';
 import ProjectLightbox from '../components/ProjectLightbox.astro';
-import Skills from '../components/Skills.astro';
-import TechStack from '../components/TechStack.astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { Image } from 'astro:assets';
-import portrait from '../assets/portrait.jpeg';
-const projects = (await getCollection('work'))
-	.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
-	.slice(0, 2);
+import PortfolioLayout from '../layouts/PortfolioLayout.astro';
 ---
-<BaseLayout>
-	<main class="home stack" data-home-motion>
-		<header class="hero wrapper">
-			<div class="intro">
-				<p class="eyebrow" data-motion="hero">Full Stack Web Developer &amp; Automation</p>
-				<h1 data-motion="hero">Christian<br /><span>Baloncio.</span></h1>
-				<p class="intro-copy" data-motion="hero">Hello! I’m a web developer based in the Philippines, building thoughtful websites and automation that makes work simpler.</p>
-				<div class="hero-actions" data-motion="hero">
-					<CallToAction href="/work/">View work <Icon icon="arrow-right" size="1.1em" /></CallToAction>
-					<a class="text-link" href="/about/">About me <Icon icon="arrow-right" size="1.1em" /></a>
-				</div>
-			</div>
-			<div class="portrait" data-motion="portrait">
-				<Image
-					src={portrait}
-					alt="Christian Baloncio standing with his arms crossed"
-					width={384}
-					widths={[320, 384, 768]}
-					sizes="(min-width: 27rem) 24rem, calc(100vw - 3rem)"
-					format="webp"
-					loading="eager"
-					decoding="async"
-					fetchpriority="high"
-				/>
-			</div>
-		</header>
-		<div class="wrapper"><Skills /></div>
-		<section class="work wrapper" aria-labelledby="selected-work">
-			<header class="section-header">
-				<h2 id="selected-work">Selected Work</h2>
-				<p>A selection of websites and systems I’ve helped bring to life.</p>
-			</header>
-			<ul class="project-grid">
-				{projects.map((project) => <li data-motion="reveal"><PortfolioPreview project={project} /></li>)}
-			</ul>
-			<a class="text-link all-work" href="/work/">View work <Icon icon="arrow-right" size="1.1em" /></a>
-		</section>
-		<div class="wrapper" data-motion="reveal"><TechStack /></div>
-		<ContactCTA />
-	</main>
-	<ProjectLightbox />
-</BaseLayout>
+<PortfolioLayout>
+	<div class="stage">
+		<div class="portfolio" id="portfolio">
+			<PortfolioProfile />
+			<PortfolioSections />
+			<PortfolioContact />
+			<ProjectLightbox />
+		</div>
+	</div>
+</PortfolioLayout>
 <script>
-	import '../scripts/home-motion';
+	import '../scripts/portfolio';
 </script>
-<style>
-	.home { gap: clamp(4rem, 8vw, 7rem); }
-	.hero { display: grid; gap: 2.5rem; align-items: center; }
-	.intro { max-width: 42rem; }
-	.eyebrow { color: var(--link-color); font-size: .75rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; margin-bottom: 1.5rem; }
-	h1 { font-size: clamp(3.5rem, 7.5vw, 6.5rem); line-height: 1.03; letter-spacing: -.055em; }
-	h1 span { color: var(--link-color); }
-	.intro-copy { max-width: 37ch; font-size: var(--text-md); margin-top: 1.5rem; }
-	.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; margin-top: 2rem; }
-	.text-link { display: inline-flex; align-items: center; gap: .65rem; font-weight: 600; white-space: nowrap; text-decoration: none; min-height: 44px; }
-	.text-link:hover { text-decoration: underline; }
-	.portrait { width: 100%; max-width: 24rem; justify-self: center; padding: .25rem; background: var(--gradient-accent); border-radius: var(--radius); }
-	.portrait img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 25%; border-radius: calc(var(--radius) - .25rem); }
-	.section-header { display: grid; gap: 1rem; margin-bottom: 2.5rem; }
-	.section-header p { max-width: 50ch; color: var(--gray-300); }
-	.project-grid { display: grid; list-style: none; padding: 0; gap: 2.5rem; }
-	.project-grid li { min-width: 0; }
-	.all-work { margin-top: 2rem; }
-	@media (min-width: 50em) {
-		.hero { grid-template-columns: minmax(0, 34rem) minmax(0, 24rem); justify-content: center; gap: clamp(2rem, 4vw, 3.5rem); }
-		.portrait { justify-self: start; }
-		.project-grid { grid-template-columns: 1.15fr 1fr; align-items: start; }
-		.project-grid li:nth-child(2) { padding-top: 4rem; }
-	}
-</style>

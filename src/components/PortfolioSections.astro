@@ -1,0 +1,33 @@
+---
+import PortfolioPreview from './PortfolioPreview.astro';
+import TechIcon from './TechIcon.astro';
+import { getPortfolioProjects, portfolio } from '../data/portfolio';
+const projects = await getPortfolioProjects();
+---
+<main class="content" id="content" tabindex="-1">
+	<nav class="section-nav" aria-label="Portfolio sections">
+		<a href="#about" aria-current="location">About</a><a href="#experience">Experience</a><a href="#projects">Projects</a><a href="#tools">Toolkit</a>
+		<span class="nav-decoration">{portfolio.initials} / {new Date().getFullYear()}</span>
+	</nav>
+	<section class="panel about" id="about" aria-labelledby="about-title">
+		<div class="section-heading"><span class="eyebrow">01 / INTRODUCTION</span><span class="small-symbol" aria-hidden="true">✳</span></div>
+		<h2 id="about-title">{portfolio.headline[0]}<br /><span>{portfolio.headline[1]}</span></h2>
+		<div class="summary">{portfolio.summary.map(paragraph => <p>{paragraph}</p>)}</div>
+		<div class="about-bottom"><span>Develop with care. Build with purpose.</span><a href="#projects">Explore my work <span aria-hidden="true">↘</span></a></div>
+	</section>
+	<section class="panel experience" id="experience" aria-labelledby="experience-title">
+		<div class="section-heading"><h2 id="experience-title">Work Experience</h2><span class="eyebrow">02 / THE JOURNEY</span></div>
+		{portfolio.experience.length ? <div class="timeline">{portfolio.experience.map(job => <article class="job"><div class="company-icon" aria-hidden="true">{job.employer.charAt(0)}</div><div class="job-body"><div class="job-top"><h3>{job.employer}</h3><span class="date">{job.period}</span></div><h4>{job.role}</h4><p>{job.summary}</p></div></article>)}</div> : <p class="experience-empty">{portfolio.experienceEmpty}</p>}
+	</section>
+	<section class="panel projects" id="projects" aria-labelledby="projects-title">
+		<div class="section-heading"><h2 id="projects-title">Recent Projects</h2><span class="eyebrow">03 / SELECTED WORK</span></div>
+		<p class="section-intro">A selection of websites and systems I’ve helped bring to life.</p>
+		<div class="project-grid">{projects.map(project => <PortfolioPreview project={project} />)}</div>
+	</section>
+	<section class="panel tools" id="tools" aria-labelledby="tools-title">
+		<div class="section-heading"><h2 id="tools-title">Tech Stack & Tools</h2><span class="eyebrow">04 / THE TOOLKIT</span></div>
+		<p class="section-intro">The tools I use, from interface to implementation.</p>
+		<div class="tool-grid">{portfolio.tools.map(tool => <article class="tool"><span class="tool-icon"><TechIcon icon={tool.icon} /></span><div><h3>{tool.name}</h3><p>{tool.description}</p></div></article>)}</div>
+	</section>
+	<footer><span>© {new Date().getFullYear()} {portfolio.name}</span><a href="#about">Back to top ↑</a></footer>
+</main>

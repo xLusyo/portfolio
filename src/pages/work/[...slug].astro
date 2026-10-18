@@ -5,7 +5,7 @@ interface Props {
 	entry: CollectionEntry<'work'>;
 }
 
-// Preserve existing project URLs while moving the presentation into the gallery.
+// Preserve existing project URLs on the single-page portfolio.
 export async function getStaticPaths() {
 	return (await getCollection('work')).map((entry) => ({
 		params: { slug: entry.id },
@@ -13,5 +13,5 @@ export async function getStaticPaths() {
 	}));
 }
 
-return Astro.redirect(`/work/#project=${encodeURIComponent(Astro.props.entry.id)}`, 301);
+return Astro.redirect(`/#project=${encodeURIComponent(Astro.props.entry.id)}`, 301);
 ---

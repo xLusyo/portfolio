@@ -4,12 +4,13 @@
 </dialog>
 
 <script>
+	import { lockPortfolioScroll } from '../scripts/scroll-lock';
 	const dialog = document.querySelector<HTMLDialogElement>('#project-lightbox');
 	if (dialog) {
 		const content = dialog.querySelector<HTMLDivElement>('.lightbox-content')!;
 		const closeButton = dialog.querySelector<HTMLButtonElement>('.close')!;
 		let opener: HTMLElement | null = null;
-		let previousOverflow = '';
+		let unlock = () => {};
 		let previousHash = '';
 		const prefix = '#project=';
 
@@ -36,10 +37,9 @@
 			if (image.complete) finishImage(image.naturalWidth > 0);
 
 			if (!dialog.open) {
-				previousOverflow = document.documentElement.style.overflow;
+				unlock = lockPortfolioScroll();
 				previousHash = location.hash.startsWith(prefix) ? '' : location.hash;
 				dialog.showModal();
-				document.documentElement.style.overflow = 'hidden';
 			}
 			dialog.scrollTop = 0;
 			closeButton.focus({ preventScroll: true });
@@ -79,7 +79,7 @@
 			if (event.target === dialog && startedOutside && outside(event)) dialog.close();
 		});
 		dialog.addEventListener('close', () => {
-			document.documentElement.style.overflow = previousOverflow;
+			unlock();
 			if (location.hash.startsWith(prefix)) {
 				history.replaceState(history.state, '', `${location.pathname}${location.search}${previousHash}`);
 			}

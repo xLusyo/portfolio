@@ -1,0 +1,22 @@
+---
+import Analytics from '@vercel/analytics/astro';
+import { portfolio } from '../data/portfolio';
+import '../styles/portfolio.css';
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#030303" />
+		<meta name="description" content="Christian Baloncio, a Full Stack Web Developer based in the Philippines. Websites, WordPress, and automation." />
+		<title>{portfolio.name} | Full Stack Web Developer</title>
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="preload" href="/fonts/dm-sans-400.ttf" as="font" type="font/ttf" crossorigin />
+	</head>
+	<body>
+		<a class="skip-link" href="#about">Skip to content</a>
+		<slot />
+		<Analytics />
+	</body>
+</html>

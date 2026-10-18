@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { portfolio } from '../data/portfolio';
+---
+<aside class="profile" aria-label="Profile and contact information">
+	<div class="portrait">
+		<Image src={portfolio.portrait} alt={portfolio.portraitAlt} width={384} widths={[320, 384, 768]} sizes="(min-width: 761px) 330px, calc(100vw - 36px)" format="webp" loading="eager" decoding="async" fetchpriority="high" />
+		<span class="portrait-label">Based in the {portfolio.location}</span>
+	</div>
+	<div class="profile-info">
+		<div>
+			<span class="eyebrow">DEVELOPMENT & AUTOMATION</span>
+			<h1>{portfolio.name.split(' ')[0]}<br />{portfolio.name.split(' ').slice(1).join(' ')}<span class="name-dot">.</span></h1>
+			<p class="role">{portfolio.role}</p>
+			<p class="profile-note">Thoughtful websites.<br />Useful digital experiences.</p>
+		</div>
+		<dl class="details">
+			{portfolio.website && <div><dt>Website</dt><dd><a href={portfolio.website}>{new URL(portfolio.website).hostname} ↗</a></dd></div>}
+			<div><dt>Email</dt><dd><a href={`mailto:${portfolio.email}`}>{portfolio.email} <span aria-hidden="true">↗</span></a></dd></div>
+		</dl>
+		<div class="socials" aria-label="Social links">
+			{portfolio.socials.map(social => <a href={social.href} aria-label={`${social.label} (opens in a new tab)`} target="_blank" rel="noopener noreferrer"><Icon icon={social.icon} size="19px" /></a>)}
+			<span>LET’S CONNECT</span>
+		</div>
+		<div class="profile-actions">
+			<a class="button resume" href={portfolio.resume.pdf ?? '/resume-sample.txt'} download={portfolio.resume.pdf ? undefined : portfolio.resume.sampleFilename}>Download Resume{!portfolio.resume.pdf && <span class="resume-sample">Sample</span>}<span aria-hidden="true">↓</span></a>
+			<button type="button" class="button contact" data-contact>Contact me <Icon icon="arrow-right" size="18px" /></button>
+			<span class="reply-note">Have something in mind? Let’s talk.</span>
+		</div>
+	</div>
+</aside>

@@ -35,8 +35,9 @@ export const portfolio = {
 	],
 	headline: ['Thoughtful websites.', 'Work made simpler.'],
 	summary: [
-		'I’m Christian, a full stack web developer based in the Philippines. I build responsive websites, custom WordPress solutions, and automation workflows that make everyday work simpler.',
-		'From user-friendly interfaces to backend logic and API integrations, I focus on clear experiences, maintainable code, and solutions that support real business goals.',
+		'I’m Christian, a full stack web developer based in the Philippines. Since 2022, I’ve helped businesses build faster websites, custom online stores, and web applications that support their marketing and daily operations.',
+		'My work spans WordPress development, client portals, and integrations that connect business tools and reduce manual work. I’ve helped teams cut onboarding time by 15% and brought client requests, files, and project updates into one place.',
+		'I focus on practical solutions that help businesses serve customers better, save time, and grow—with code that’s easy to maintain.',
 	],
 	experience: [
 		{
@@ -81,7 +82,7 @@ export const portfolio = {
 		},
 	] satisfies Experience[],
 	experienceEmpty: 'Work history details have not been provided yet.',
-	resume: { pdf: null as string | null, sampleFilename: 'Portfolio-Sample-Resume.txt' },
+	resume: { pdf: 'https://drive.google.com/file/d/1q-4n8FK-GjgC-VVzik72QbfYxn1XXrOK/view?usp=sharing' as string | null, sampleFilename: 'Portfolio-Sample-Resume.txt' },
 	tools: [
 		{
 			name: 'Backend Development',

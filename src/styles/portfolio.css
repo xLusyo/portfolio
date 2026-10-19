@@ -562,14 +562,31 @@ h1 {
 
 .job-highlights {
 	margin: 0;
-	padding-left: 18px;
+	padding: 0;
+	list-style: none;
 	color: var(--muted);
 	font-size: 14px;
 	line-height: 1.85;
 }
 
+.job-highlights li {
+	position: relative;
+	padding-inline-start: 20px;
+}
+
+.job-highlights li::before {
+	content: '';
+	position: absolute;
+	inset-inline-start: 0;
+	inset-block-start: .925em;
+	width: 8px;
+	border-top: 2px solid var(--accent-regular);
+	border-radius: 999px;
+	transform: translateY(-50%);
+}
+
 .job-highlights li+li {
-	margin-top: 8px;
+	margin-top: 10px;
 }
 
 .section-intro {
@@ -1040,6 +1057,9 @@ textarea {
 }
 
 @media (forced-colors: active) {
+	.job-highlights li::before {
+		border-color: CanvasText;
+	}
 
 	.portfolio,
 	.panel,

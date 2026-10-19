@@ -31,7 +31,7 @@ const projects = await getPortfolioProjects();
 							</div>
 							<h4>{job.role}</h4>
 							<p class="job-meta">{job.location} · {job.employmentType}</p>
-							<ul class="job-highlights">
+							<ul class="job-highlights" role="list">
 								{job.highlights.map(highlight => <li>{highlight}</li>)}
 							</ul>
 						</div>

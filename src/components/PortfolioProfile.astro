@@ -24,7 +24,7 @@ import { portfolio } from '../data/portfolio';
 			<span>LET’S CONNECT</span>
 		</div>
 		<div class="profile-actions">
-			<a class="button resume" href={portfolio.resume.pdf ?? '/resume-sample.txt'} download={portfolio.resume.pdf ? undefined : portfolio.resume.sampleFilename}>Download Resume{!portfolio.resume.pdf && <span class="resume-sample">Sample</span>}<span aria-hidden="true">↓</span></a>
+			<a class="button resume" href={portfolio.resume.pdf ?? '/resume-sample.txt'} target="_blank" download={portfolio.resume.pdf ? undefined : portfolio.resume.sampleFilename}>Download Resume{!portfolio.resume.pdf && <span class="resume-sample">Sample</span>}<span aria-hidden="true">↓</span></a>
 			<button type="button" class="button contact" data-contact>Contact me <Icon icon="arrow-right" size="18px" /></button>
 			<span class="reply-note">Have something in mind? Let’s talk.</span>
 		</div>

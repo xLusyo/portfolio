@@ -109,10 +109,10 @@ export const portfolio = {
 			technologies: ['Power Automate', 'Make', 'n8n', 'Zapier'],
 		},
 		{
-			name: 'CRM & Analytics',
-			description: 'Integrations, tracking & attribution',
+			name: 'CRM, SEO & Analytics',
+			description: 'Integrations, search optimization & tracking',
 			icon: 'hubspot',
-			technologies: ['HubSpot', 'Microsoft Dynamics', 'GA4', 'Google Tag Manager', 'Search Console', 'Conversion Tracking'],
+			technologies: ['HubSpot', 'Microsoft Dynamics', 'SEO', 'Technical SEO', 'On-page SEO', 'Google Analytics (GA4)', 'Google Tag Manager', 'Google Search Console', 'Conversion Tracking'],
 		},
 		{
 			name: 'Development Tools',
